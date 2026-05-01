@@ -1,42 +1,89 @@
-# sv
+# Problem Statement
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+As a hobbyist billiards player, I currently rely on memory and my iPhone Notes app to track improvement, tournament performance, and practice sessions.
+This makes it difficult to:
+• identify patterns in performance
+• remember what drills or adjustments help
+• track tournament history over time
+• reflect on long-term progress
+I want a centralized personal system to document and review my billiards journey.
 
-## Creating a project
+---
 
-If you're seeing this, you've probably already done this step. Congrats!
+# Goal
 
-```sh
-# create a new project
-npx sv create my-app
-```
+Build a lightweight web application that allows me to log:
+• practice sessions
+• match results
+• tournament performance
+• technique notes
+• personal improvement insights
+The goal is not to create a public social platform, but a personal tool for structured self-improvement and long-term tracking.
 
-To recreate this project with the same configuration:
+---
 
-```sh
-# recreate this project
-npx sv@0.15.2 create --template minimal --types ts --install npm ./
-```
+# Core Features (MVP)
 
-## Developing
+### Session Logging
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Track:
+• date
+• location
+• game type (8-ball, 9-ball, etc.)
+• drills practiced
+• wins/losses
+• notes and observations
 
-```sh
-npm run dev
+### Tournament Tracking
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+Track:
+• tournament name
+• placement
+• match outcomes
+• notable moments
+• lessons learned
 
-## Building
+### Knowledge Journal
 
-To create a production version of your app:
+Store:
+• shot patterns
+• break observations
+• positional play notes
+• mental game lessons
+• personal techniques and adjustments
 
-```sh
-npm run build
-```
+---
 
-You can preview the production build with `npm run preview`.
+# Tech Stack
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+### Frontend
+
+• SvelteKit
+• TypeScript
+
+### Backend / Database
+
+• Supabase
+
+---
+
+# Future Features (Post-MVP)
+
+### Possible expansions:
+
+• stats dashboard
+• performance trends over time
+• win rate by game type
+• opponent history
+• match heatmaps
+• practice streak tracking
+
+---
+
+# Why This Project Matters
+
+This project combines:
+• personal passion (billiards)
+• practical software engineering
+• full-stack development experience
+It also creates something I would genuinely use, making development more meaningful than building a generic demo project.
