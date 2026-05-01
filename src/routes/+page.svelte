@@ -42,8 +42,12 @@
         losses = 0;
         notes = '';
     }
-</script>
 
+    function deleteSession(id: number) {
+        sessions = sessions.filter((session) => session.id !== id);
+    }
+</script>
+<main>
 <h1>CueTrack</h1>
 <p>Track pool sessions, match results, and practice notes.</p>
 
@@ -71,6 +75,15 @@
             <option>10-ball</option>
             <option>Straight Pool</option>
             <option>Drills</option>
+        </select>
+    </label>
+
+    <label>
+        Session Type
+        <select bind:value={sessionType}>
+            <option>Practice</option>
+            <option>Match</option>
+            <option>Tournament</option>
         </select>
     </label>
 
@@ -104,7 +117,77 @@
                 <p>{session.date} · {session.sessionType}</p>
                 <p>Record: {session.wins}W - {session.losses}L</p>
                 <p>{session.notes}</p>
+
+                <button type="button" class="delete-button" onclick={() => deleteSession(session.id)}>
+                    Delete
+                </button>
             </article>
         {/each}
     {/if}
 </section>
+</main>
+
+<style>
+    :global(body) {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #f4f1ea;
+        color: #1f2933;
+    }
+
+    main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    form {
+        display: grid;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    label {
+        display: grid;
+        gap: 0.35rem;
+        font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 0.7rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font: inherit;
+    }
+
+    button {
+        padding: 0.8rem 1rem;
+        border: none;
+        border-radius: 0.6rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    article {
+        margin-top: 1rem;
+        padding: 1.25rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .delete-button {
+        margin-top: 0.75rem;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .delete-button:hover {
+        background: #fecaca;
+    }
+</style>
