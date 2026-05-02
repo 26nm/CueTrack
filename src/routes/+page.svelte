@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { supabase } from '$lib/supabaseClient';
+
     type Session = {
-        id: number;
+        id: string;
         date: string;
         location: string;
-        gameType: string;
-        sessionType: string;
+        game_type: string;
+        session_type: string;
         wins: number;
         losses: number;
         notes: string;
@@ -20,19 +23,35 @@
     let losses =$state(0);
     let notes = $state('')
 
-    function addSession() {
-        const newSession: Session = {
-            id: Date.now(),
+    async function fetchSessions() {
+        const { data, error } = await supabase
+            .from('sessions')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if(error) {
+            console.error(error);
+            return;
+        }
+
+        sessions = data ?? [];
+    }
+
+    async function addSession() {
+        const { error } = await supabase.from('sessions').insert({
             date,
             location,
-            gameType,
-            sessionType,
+            game_type: gameType,
+            session_type: sessionType,
             wins,
             losses,
             notes
-        };
+        });
 
-        sessions = [newSession, ...sessions];
+        if(error) {
+            console.error(error);
+            return;
+        }
 
         date = '';
         location = '';
@@ -41,11 +60,22 @@
         wins = 0;
         losses = 0;
         notes = '';
+
+        await fetchSessions();
     }
 
-    function deleteSession(id: number) {
+    async function deleteSession(id: string) {
+        const { error } = await supabase.from('sessions').delete().eq('id', id);
+
+        if(error) {
+            console.error(error);
+            return;
+        }
+
         sessions = sessions.filter((session) => session.id !== id);
     }
+
+    onMount(fetchSessions);
 </script>
 <main>
 <h1>CueTrack</h1>
@@ -113,8 +143,8 @@
     {:else}
         {#each sessions as session}
             <article>
-                <h3>{session.gameType} at {session.location}</h3>
-                <p>{session.date} · {session.sessionType}</p>
+                <h3>{session.game_type} at {session.location}</h3>
+                <p>{session.date} · {session.session_type}</p>
                 <p>Record: {session.wins}W - {session.losses}L</p>
                 <p>{session.notes}</p>
 
