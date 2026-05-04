@@ -24,6 +24,13 @@
     let notes = $state('')
     let editingSessionId = $state<string | null>(null);
 
+    let totalWins = $derived(sessions.reduce((sum, session) => sum + session.wins, 0));
+    let totalLosses = $derived(sessions.reduce((sum, session) => sum + session.losses, 0))
+    let totalGames = $derived(totalWins + totalLosses);
+    let winRate = $derived(
+        totalGames === 0 ? 0 : Math.round((totalWins / totalGames) * 100)
+    );
+
     async function fetchSessions() {
         const { data, error } = await supabase
             .from('sessions')
@@ -170,6 +177,22 @@
         {editingSessionId ? 'Save Changes' : 'Add Session'}
     </button>
 </form>
+<section class="stats">
+    <article>
+        <h3>Total Sessions</h3>
+        <p>{sessions.length}</p>
+    </article>
+
+    <article>
+        <h3>Total Record</h3>
+        <p>{totalWins}W - {totalLosses}L</p>
+    </article>
+
+    <article>
+        <h3>Win Rate</h3>
+        <p>{winRate}%</p>
+    </article>
+</section>
 
 <section>
     <h2>Session History</h2>
@@ -259,5 +282,35 @@
 
     .delete-button:hover {
         background: #fecaca;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .stats article {
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .stats h3 {
+        margin: 0 0 0.5rem;
+        font-size: 0.95rem;
+        color: #4b5563;
+    }
+
+    .stats p {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    @media (max-width: 700px) {
+        .stats {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
