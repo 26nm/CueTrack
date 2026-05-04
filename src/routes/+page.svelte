@@ -198,10 +198,14 @@
     <h2>Session History</h2>
 
     {#if sessions.length === 0}
-        <p>No sessions logged yet.</p>
+        <p>No sessions logged yet. Log your first session!</p>
     {:else}
-        {#each sessions as session}
+        {#each sessions as session, i}
             <article>
+                {#if i === 0}
+                    <span class="badge">Latest</span>
+                {/if}
+
                 <h3>{session.game_type} at {session.location}</h3>
                 <p>{session.date} · {session.session_type}</p>
                 <p>Record: {session.wins}W - {session.losses}L</p>
@@ -304,7 +308,7 @@
 
     .stats p {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 800;
     }
 
