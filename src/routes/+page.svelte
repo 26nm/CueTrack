@@ -22,6 +22,7 @@
     let wins = $state(0);
     let losses =$state(0);
     let notes = $state('')
+    let editingSessionId = $state<string | null>(null);
 
     async function fetchSessions() {
         const { data, error } = await supabase
@@ -53,6 +54,25 @@
             return;
         }
 
+        if(editingSessionId) {
+            await supabase
+                .from('sessions')
+                .update({
+                    date,
+                    location,
+                    game_type: gameType,
+                    session_type: sessionType,
+                    wins,
+                    losses,
+                    notes
+                })
+                .eq('id', editingSessionId);
+
+            editingSessionId = null;
+            await fetchSessions();
+            return;
+        }
+
         date = '';
         location = '';
         gameType = '8-ball';
@@ -62,6 +82,17 @@
         notes = '';
 
         await fetchSessions();
+    }
+
+    function startEdit(session: Session) {
+        editingSessionId = session.id;
+        date = session.date;
+        location = session.location;
+        gameType = session.game_type;
+        sessionType = session.session_type;
+        wins = session.wins;
+        losses = session.losses;
+        notes = session.notes;
     }
 
     async function deleteSession(id: string) {
@@ -132,7 +163,9 @@
         <textarea bind:value={notes} placeholder="What did you notice today?"></textarea>
     </label>
 
-    <button type="submit">Add Session</button>
+    <button type="submit">
+        {editingSessionId ? 'Save Changes' : 'Add Session'}
+    </button>
 </form>
 
 <section>
@@ -147,6 +180,10 @@
                 <p>{session.date} · {session.session_type}</p>
                 <p>Record: {session.wins}W - {session.losses}L</p>
                 <p>{session.notes}</p>
+
+                <button type="button" onclick={() => startEdit(session)}>
+                    Edit
+                </button>
 
                 <button type="button" class="delete-button" onclick={() => deleteSession(session.id)}>
                     Delete
