@@ -39,7 +39,7 @@
     }
 
     async function addSession() {
-        const { error } = await supabase.from('sessions').insert({
+        const sessionPayload = {
             date,
             location,
             game_type: gameType,
@@ -47,32 +47,37 @@
             wins,
             losses,
             notes
-        });
+        };
+
+        if(editingSessionId) {
+            const { error } = await supabase
+                .from('sessions')
+                .update(sessionPayload)
+                .eq('id', editingSessionId);
+
+            if(error) {
+                console.error(error);
+                return;
+            }
+
+            editingSessionId = null;
+            resetForm();
+            await fetchSessions();
+            return;
+        }
+
+        const { error } = await supabase.from('sessions').insert(sessionPayload);
 
         if(error) {
             console.error(error);
             return;
         }
 
-        if(editingSessionId) {
-            await supabase
-                .from('sessions')
-                .update({
-                    date,
-                    location,
-                    game_type: gameType,
-                    session_type: sessionType,
-                    wins,
-                    losses,
-                    notes
-                })
-                .eq('id', editingSessionId);
+        resetForm();
+        await fetchSessions();
+    }
 
-            editingSessionId = null;
-            await fetchSessions();
-            return;
-        }
-
+    function resetForm() {
         date = '';
         location = '';
         gameType = '8-ball';
@@ -80,8 +85,6 @@
         wins = 0;
         losses = 0;
         notes = '';
-
-        await fetchSessions();
     }
 
     function startEdit(session: Session) {
